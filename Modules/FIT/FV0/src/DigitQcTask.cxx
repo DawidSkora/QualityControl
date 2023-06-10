@@ -68,7 +68,7 @@ void DigitQcTask::rebinFromConfig()
 
   const std::string rebinKeyword = "binning";
   const char* channelIdPlaceholder = "#";
-  for (auto& param : mCustomParameters) {
+  for (auto& param : mCustomParameters.getAllDefaults()) {
     if (param.first.rfind(rebinKeyword, 0) != 0)
       continue;
     std::string hName = param.first.substr(rebinKeyword.length() + 1);
@@ -382,7 +382,7 @@ void DigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   }
 }
 
-void DigitQcTask::startOfActivity(Activity& activity)
+void DigitQcTask::startOfActivity(const Activity& activity)
 {
   ILOG(Debug, Devel) << "startOfActivity" << activity.mId << ENDM;
   mHistTime2Ch->Reset();
@@ -674,7 +674,7 @@ void DigitQcTask::endOfCycle()
   ILOG(Debug) << "Cycle duration: NTF=" << mTfCounter << ", range = " << (mTimeMaxNS - mTimeMinNS) / 1e6 / mTfCounter << " ms/TF, sum = " << mTimeSum / 1e6 / mTfCounter << " ms/TF" << ENDM;
 }
 
-void DigitQcTask::endOfActivity(Activity& /*activity*/)
+void DigitQcTask::endOfActivity(const Activity& /*activity*/)
 {
   ILOG(Debug, Devel) << "endOfActivity" << ENDM;
 }

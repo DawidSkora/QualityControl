@@ -23,6 +23,7 @@
 #include <Rtypes.h>
 #include <CCDB/CcdbApi.h>
 
+#include "QualityControl/CustomParameters.h"
 #include "QualityControl/QcInfoLogger.h"
 
 namespace o2::quality_control::core
@@ -39,7 +40,7 @@ class UserCodeInterface
   /// Destructor
   virtual ~UserCodeInterface() = default;
 
-  void setCustomParameters(const std::unordered_map<std::string, std::string>& parameters);
+  void setCustomParameters(const CustomParameters& parameters);
 
   /// \brief Configure the object.
   ///
@@ -57,14 +58,14 @@ class UserCodeInterface
                           long timestamp = -1);
 
  protected:
-  std::unordered_map<std::string, std::string> mCustomParameters;
+  CustomParameters mCustomParameters;
   std::string mName;
 
  private:
   std::shared_ptr<o2::ccdb::CcdbApi> mCcdbApi;
   std::string mCcdbUrl; // we need to keep the url in addition to the ccdbapi because we don't initialize the latter before the first call
 
-  ClassDef(UserCodeInterface, 1)
+  ClassDef(UserCodeInterface, 2)
 };
 
 template <typename T>

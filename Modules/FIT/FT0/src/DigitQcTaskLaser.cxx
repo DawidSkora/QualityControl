@@ -67,7 +67,7 @@ void DigitQcTaskLaser::rebinFromConfig()
 
   const std::string rebinKeyword = "binning";
   const char* channelIdPlaceholder = "#";
-  for (auto& param : mCustomParameters) {
+  for (auto& param : mCustomParameters.getAllDefaults()) {
     if (param.first.rfind(rebinKeyword, 0) != 0)
       continue;
     std::string hName = param.first.substr(rebinKeyword.length() + 1);
@@ -318,7 +318,7 @@ void DigitQcTaskLaser::initialize(o2::framework::InitContext& /*ctx*/)
   }
 }
 
-void DigitQcTaskLaser::startOfActivity(Activity& activity)
+void DigitQcTaskLaser::startOfActivity(const Activity& activity)
 {
   ILOG(Debug, Devel) << "startOfActivity" << activity.mId << ENDM;
   mHistTime2Ch->Reset();
@@ -550,7 +550,7 @@ void DigitQcTaskLaser::endOfCycle()
   mHistCFDEff->Divide(mHistNumADC.get(), mHistNumCFD.get());
 }
 
-void DigitQcTaskLaser::endOfActivity(Activity& /*activity*/)
+void DigitQcTaskLaser::endOfActivity(const Activity& /*activity*/)
 {
   ILOG(Debug, Devel) << "endOfActivity" << ENDM;
 }

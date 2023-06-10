@@ -429,6 +429,7 @@ void TaskRunner::startOfActivity()
   // Start activity in module's task and update objectsManager
   ILOG(Info, Support) << "Starting run " << mRunNumber << ENDM;
   Activity activity = mTaskConfig.fallbackActivity;
+  activity.mId = mRunNumber;
   Bookkeeping::getInstance().populateActivity(activity, mRunNumber);
   mObjectsManager->setActivity(activity);
   mCollector->setRunNumber(mRunNumber);
@@ -464,6 +465,8 @@ void TaskRunner::finishCycle(DataAllocator& outputs)
   ILOG(Debug, Support) << "Finish cycle " << mCycleNumber << ENDM;
   mTask->endOfCycle();
 
+  auto nowMs = getCurrentTimestamp();
+  mObjectsManager->setValidity(ValidityInterval{ nowMs, nowMs + 1000l * 60 * 60 * 24 * 365 * 10 });
   mNumberObjectsPublishedInCycle += publish(outputs);
   mTotalNumberObjectsPublished += mNumberObjectsPublishedInCycle;
   saveToFile();
