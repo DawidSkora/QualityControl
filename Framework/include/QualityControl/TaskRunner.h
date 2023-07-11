@@ -48,6 +48,7 @@ class ProcessingContext;
 namespace o2::quality_control::core
 {
 
+class Timekeeper;
 class TaskInterface;
 class ObjectsManager;
 
@@ -137,7 +138,8 @@ class TaskRunner : public framework::Task
   std::shared_ptr<monitoring::Monitoring> mCollector;
   std::shared_ptr<TaskInterface> mTask;
   std::shared_ptr<ObjectsManager> mObjectsManager;
-  int mRunNumber;
+  std::shared_ptr<Timekeeper> mTimekeeper;
+  Activity mActivity;
 
   void updateMonitoringStats(framework::ProcessingContext& pCtx);
 

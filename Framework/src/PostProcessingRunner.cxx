@@ -162,13 +162,8 @@ void PostProcessingRunner::runOverTimestamps(const std::vector<uint64_t>& timest
 void PostProcessingRunner::start(framework::ServiceRegistryRef dplServices)
 {
   if (dplServices.active<framework::RawDeviceService>()) {
-    mTaskConfig.activity.mId = computeRunNumber(dplServices, mTaskConfig.activity.mId);
-    mTaskConfig.activity.mType = computeRunType(dplServices, mTaskConfig.activity.mType);
-    mTaskConfig.activity.mPeriodName = computePeriodName(dplServices, mTaskConfig.activity.mPeriodName);
-    mTaskConfig.activity.mPassName = computePassName(mTaskConfig.activity.mPassName);
-    mTaskConfig.activity.mProvenance = computeProvenance(mTaskConfig.activity.mProvenance);
-    auto partitionName = computePartitionName(dplServices);
-    QcInfoLogger::setPartition(partitionName);
+    mTaskConfig.activity = computeActivity(dplServices, mTaskConfig.activity);
+    QcInfoLogger::setPartition(mTaskConfig.activity.mPartitionName);
   }
   QcInfoLogger::setRun(mTaskConfig.activity.mId);
 
@@ -237,6 +232,10 @@ void PostProcessingRunner::doUpdate(const Trigger& trigger)
 
 void PostProcessingRunner::doFinalize(const Trigger& trigger)
 {
+  if (mTaskState != TaskState::Running) {
+    ILOG(Warning, Support) << "Attempt at finalizing the user task although it was not initialized. Skipping the finalization." << ENDM;
+    return;
+  }
   ILOG(Info, Support) << "Finalizing the user task due to trigger '" << trigger << "'" << ENDM;
   mTask->finalize(trigger, mServices);
   mObjectManager->setValidity(ValidityInterval{ trigger.timestamp, trigger.timestamp + objectValidity });
